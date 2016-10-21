@@ -17,12 +17,14 @@ namespace TwoStepsAuthenticator
         private readonly Func<DateTime> NowFunc;
         private readonly IUsedCodesManager UsedCodeManager;
         private readonly int IntervalSeconds;
+        private readonly int CodeLength;
 
-        public TimeAuthenticator(IUsedCodesManager usedCodeManager = null, Func<DateTime> nowFunc = null, int intervalSeconds = 30)
+        public TimeAuthenticator(IUsedCodesManager usedCodeManager = null, Func<DateTime> nowFunc = null, int intervalSeconds = 30, int codeLength = 8)
         {
             this.NowFunc = (nowFunc == null) ? () => DateTime.Now : nowFunc;
             this.UsedCodeManager = (usedCodeManager == null) ? DefaultUsedCodeManager.Value : usedCodeManager;
             this.IntervalSeconds = intervalSeconds;
+            this.CodeLength = codeLength;
         }
 
         /// <summary>
@@ -43,7 +45,7 @@ namespace TwoStepsAuthenticator
         /// <returns>OTP</returns>
         public string GetCode(string secret, DateTime date)
         {
-            return GetCodeInternal(secret, (ulong)GetInterval(date));
+            return GetCodeInternal(secret, (ulong)GetInterval(date), CodeLength);
         }
 
         /// <summary>

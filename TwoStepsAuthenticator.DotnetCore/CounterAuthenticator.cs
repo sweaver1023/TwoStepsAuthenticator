@@ -13,13 +13,15 @@ namespace TwoStepsAuthenticator
     public class CounterAuthenticator : Authenticator
     {
         private readonly int WindowSize;
+        private readonly int CodeLength;
 
-        public CounterAuthenticator(int windowSize = 10) {
+        public CounterAuthenticator(int windowSize = 10, int codeLength = 8) {
             if (windowSize <= 0) {
                 throw new ArgumentException("look-ahead window size must be positive");
             }
 
             this.WindowSize = windowSize;
+            this.CodeLength = codeLength;
         }
 
         /// <summary>
@@ -30,7 +32,7 @@ namespace TwoStepsAuthenticator
         /// <returns>OTP</returns>
         public string GetCode(string secret, ulong counter)
         {
-            return GetCodeInternal(secret, counter);
+            return GetCodeInternal(secret, counter, CodeLength);
         }
 
         /// <summary>

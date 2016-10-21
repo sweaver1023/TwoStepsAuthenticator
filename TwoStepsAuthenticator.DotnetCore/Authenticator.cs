@@ -24,7 +24,8 @@ namespace TwoStepsAuthenticator
             return new String(keyChars);
         }
 
-        protected string GetCodeInternal(string secret, ulong challengeValue) {
+        protected string GetCodeInternal(string secret, ulong challengeValue, int codeLength) {
+
             ulong chlg = challengeValue;
             byte[] challenge = new byte[8];
             for (int j = 7; j >= 0; j--) {
@@ -49,10 +50,11 @@ namespace TwoStepsAuthenticator
             }
 
             truncatedHash &= 0x7FFFFFFF;
-            truncatedHash %= 1000000;
+            //CodeLength should be between 6-8
+            truncatedHash %= (int)Math.Pow(10, codeLength);
 
             string code = truncatedHash.ToString();
-            return code.PadLeft(6, '0');
+            return code.PadLeft(codeLength, '0');
         }
 
         protected bool ConstantTimeEquals(string a, string b) {
